@@ -1,7 +1,8 @@
 import numpy
 from types import FunctionType
 from typing import Tuple
-import cv2
+
+import matplotlib.pyplot as plt
 
 class Sequence:
     '''
@@ -18,6 +19,7 @@ class Sequence:
         
         self.generationFunction: FunctionType = generationFunction
         self.values: numpy.ndarray = initialValues
+        self.newValues: numpy.ndarray = numpy.zeros((1, 1))
     
     def generateTerms(self, n: int):
         '''
@@ -37,12 +39,17 @@ class Sequence:
         newValues = numpy.zeros(tuple(newShape))
         i = self.values.shape[0]
         newValues[:i] = self.values
+        self.values = newValues
 
         # Create all the new values necessary and set self.values equal to the calculated new values
         while i < n:
-            newValues[i] = self.generationFunction(newValues, i)
+
+            # Print out a return log of percentage completed
+            if i % 250 == 0:
+                print("Currently Generating " + str(n) + " terms: " + str(round(i / n * 100, 2)) + "%", end = "\r")
+
+            self.values[i] = self.generationFunction(self, i)
             i += 1
-        self.values = newValues
     
     def showSequence(self, imgSize: Tuple[int, int] = (800, 800), savePath: str = None):
         '''
@@ -55,13 +62,6 @@ class Sequence:
         savePath:
         '''
 
-        minimumX = 0
-        maximumX = self.values.shape[0]
-        minimumY = numpy.min(self.values)
-        maximumY = numpy.max(self.values)
-
-        pointSize = numpy.array([1 / (maximumX - minimumX), 1 / (maximumY - minimumY)]) * numpy.array(imgSize)
-        print(pointSize)
-
-        img = numpy.zeros(imgSize)
+        plt.plot(self.values, linestyle = "None", marker = "o", markersize = .02)
+        plt.show()
 

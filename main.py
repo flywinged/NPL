@@ -1,14 +1,12 @@
-from sequences.sequence import Sequence
+from sequences import Sequence
+from sequences.examples import multiplicationReduction_GenerationFunction, lowestAvailable_GenerationFunction
 import numpy
-
-def f(sequence, i):
-    return sequence[i - 1] + 1
 
 if __name__ == "__main__":
     
-    S = Sequence(f, numpy.array([[1]]))
+    S = Sequence(lowestAvailable_GenerationFunction, numpy.array([[0]]))
 
-    S.generateTerms(10)
+    S.generateTerms(1e4)
 
     print(S.values)
     S.showSequence()
